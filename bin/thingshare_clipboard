@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# Uploads data that is on the clipboard. The share url is then placed on the
+# clipboard.
+#
+# If the data begins with file://, it uploads the file.
+#
+# If data is uploaded directly from the clipboard, the uploaded file's extension
+# is based on the content's mime type (through `file`).
+
+SCRIPTDIR=$(dirname "$0")
+
+# Read data from clipboard.
+data=$(xclip -selection clipboard -o | xxd -p)
+
+# If the data is of the format file://..., read the file contents.
+if [[ $(echo -n ${data} | xxd -p -r) =~ ^file:// ]];
+then
+    file_name=$(echo -n ${data} | xxd -p -r | cut -c 8-)
+
+    if [[ -f $file_name ]]; then
+        is_file=true
+        upload_file_name=$(basename "${file_name}")
+        mime_type=$(file -b --mime-type "${file_name}")
+        data=$(cat "${file_name}" | xxd -p)
+    fi
+fi
+
+if [ -z "${is_file}" ]; then
+    # Find a valid extension through the data's detected mime-type.
+    mime_type=$(echo -n $data | xxd -p -r | file -b --mime-type -)
+
+    # Find a valid extension through the data's detected mime-type.
+    ext=$(grep "${mime_type}" /etc/mime.types | awk '{print $NF}')
+
+    # Default to .txt if unset.
+    if [ -z "$ext" ]; then
+        ext="txt"
+    fi
+
+    upload_file_name=$(echo "clip.${ext}")
+fi
+
+# Upload.
+url=$(echo -n $data | xxd -p -r | ${SCRIPTDIR}/thingshare_upload "${upload_file_name}")
+
+# Copy share url to clipboard.
+echo $url | xclip -selection clipboard
+
+# Send notification.
+notify-send -i "$tmp_name" "Clipboard" "Clipboard uploaded to ${url}"

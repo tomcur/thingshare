@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Upload data on stdin to a Seafile server.
+#
+# Takes exactly one argument: the suggested file name of the upload.
+#
+# Returns the share URL.
+
+if [[ -f "${HOME}/.config/thingshare" ]]; then
+    source ${HOME}/.config/thingshare
+else
+    echo "Could not source config ${HOME}/.config/thingshare"
+    exit 1
+fi
+
+# Prepend datetime and escape double quotes.
+file_name="`date +%Y-%m-%d_%H-%M-%S`_$(echo $1 | sed 's/"/\\"/g')"
+
+# Trim external whitespace.
+trim() {
+    echo -e "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
+}
+
+case "${upload_service}" in
+    seafile)
+        # Get auth token.
+        token=$(curl --data-urlencode username="${seafile_username}" --data-urlencode password="${seafile_password}" ${seafile_api}/auth-token/ 2>/dev/null | jq -r '.token')
+
+        # Request a url we can upload to.
+        upload_url=$(curl -G -H "Authorization: Token ${token}" -H "Accept: application/json" ${seafile_api}/repos/${seafile_repo_id}/upload-link/ 2>/dev/null | jq -r '.')
+
+        # Upload to the url and get the file's name on the server.
+        server_file_name=$(curl -H "Authorization: Token ${token}" -F "file=@-;filename=\"${file_name}\"" -F parent_dir=/ ${upload_url}?ret-json=1 2>/dev/null | jq -r '.[0].name')
+
+        # Share the file.
+        share_location=$(curl -X PUT -H "Authorization: Token ${token}" --data-urlencode p="${server_file_name}" -d share_type="download" -i ${seafile_api}/repos/${seafile_repo_id}/file/shared-link/ 2>/dev/null | grep -Fi Location)
+
+        echo "$(trim "${share_location}" | cut -c 10- | trim $(cat))"
+        exit 0
+        ;;
+    *)
+        echo "Unknown upload service: ${upload_service}"
+        exit 1
+        ;;
+esac

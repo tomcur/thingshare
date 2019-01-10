@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Take a screenshot and upload it. The share url is then placed on the
+# clipboard.
+# 
+# Takes exactly one argument, which should be either 'region' or 'window' to
+# take a region selection or active window screenshot respectively.
+
+SCRIPTDIR=$(dirname "$0")
+
+tmp_file=$(mktemp)
+
+case $1 in
+    region)
+        # Take region screenshot.
+        img=$(flameshot gui --raw | xxd -p)
+        retval=$?
+
+        # Hacky way to exit if no screenshot was taken. Currently flameshot does
+        # not have good exit codes.
+        size=$(echo ${img} | wc -c)
+        if [ ${size} -lt 35 ]; then
+            exit 1
+        fi
+
+        echo -n ${img} | xxd -p -r > "${tmp_file}"
+        ;;
+    window)
+        # Take window screenshot.
+        spectacle -a -b -n -o "${tmp_file}"
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+        ;;
+esac
+
+# Upload.
+url=$(cat "${tmp_file}" | ${SCRIPTDIR}/thingshare_upload "screenshot.png")
+
+# Copy share url to clipboard.
+echo "${url}?raw=1" | xclip -selection clipboard
+
+# Send notification.
+notify-send -i "${tmp_file}" "Screenshot" "Screenshot uploaded to ${url}?raw=1"
+
+# Remove local image.
+rm "${tmp_file}"

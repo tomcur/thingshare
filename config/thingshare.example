@@ -1,0 +1,5 @@
+upload_service=seafile
+seafile_api=https://seacloud.cc/api2
+seafile_username=me@example.com
+seafile_password=password
+seafile_repo_id=0000000-0000-0000-0000-000000000000
