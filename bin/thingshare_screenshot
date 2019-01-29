@@ -46,6 +46,14 @@ case $1 in
             exit 1
         fi
         ;;
+    *)
+        echo "Invalid command. Commands are:"
+	echo "  region   Interactively take a region screenshot."
+	echo "  window   Take a screenshot of the focussed window."
+	echo "  display  Take a screenshot of the active display."
+	echo "  full     Take a screenshot of the full desktop."
+	exit 1
+	;;
 esac
 
 # Upload.
