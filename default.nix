@@ -14,7 +14,7 @@ stdenv.mkDerivation rec {
     cp ${src}/bin/* $out/bin/
     chmod +x $out/bin/*
     wrapProgram $out/bin/thingshare_clipboard --prefix PATH : ${lib.makeBinPath [ pkgs.libnotify pkgs.coreutils pkgs.gnugrep pkgs.curl pkgs.jq pkgs.file pkgs.gawk pkgs.xxd pkgs.xclip ]}
-    wrapProgram $out/bin/thingshare_screenshot --prefix PATH : ${lib.makeBinPath [ pkgs.libnotify pkgs.spectacle pkgs.flameshot pkgs.coreutils pkgs.gnugrep pkgs.curl pkgs.jq pkgs.file pkgs.gawk pkgs.xxd ]}
+    wrapProgram $out/bin/thingshare_screenshot --prefix PATH : ${lib.makeBinPath [ pkgs.libnotify pkgs.scrot pkgs.flameshot pkgs.coreutils pkgs.gnugrep pkgs.curl pkgs.jq pkgs.file pkgs.gawk pkgs.xxd ]}
     wrapProgram $out/bin/thingshare_init --prefix PATH : ${lib.makeBinPath [ pkgs.flameshot ]}
   '';
 

@@ -8,7 +8,7 @@
 
 SCRIPTDIR=$(dirname "$0")
 
-tmp_file=$(mktemp)
+tmp_file=$(mktemp).png
 
 case $1 in
     region)
@@ -27,7 +27,7 @@ case $1 in
         ;;
     window)
         # Take window screenshot.
-        spectacle -a -b -n -o "${tmp_file}"
+        scrot --silent --focused "${tmp_file}"
         if [ $? -ne 0 ]; then
             exit 1
         fi
