@@ -32,6 +32,20 @@ case $1 in
             exit 1
         fi
         ;;
+    display)
+	# Take current display screenshot.
+        scrot --silent "${tmp_file}"
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+        ;;
+    full)
+        # Take full desktop screenshot.
+	scrot --silent --multidisp "${tmp_file}"
+        if [ $? -ne 0 ]; then
+            exit 1
+        fi
+        ;;
 esac
 
 # Upload.

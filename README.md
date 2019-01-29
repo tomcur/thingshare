@@ -8,7 +8,7 @@ be uploaded automatically and a share URL placed in your clipboard.
 
 ## Features
 - Interactively create and upload region screenshots (using Flameshot).
-- Create and upload screenshots of the active Window (using Spectacle).
+- Create and upload screenshots of the active window, active display, or full desktop (using scrot).
 - Upload files or data directly from the clipboard.
 - Supported file share services:
     - Seafile
@@ -27,7 +27,7 @@ your path.
 
 ## Without Nix
 
-Install `flameshot` and `spectacle` with your favorite package manager.
+Install `flameshot` and `scrot` with your favorite package manager.
 
 Other dependencies will be included by default on most Linux distributions.
 For completeness, these are generally packaged as:
@@ -63,6 +63,8 @@ Create and upload region or active window screenshots using:
 ```bash
 $ thingshare_screenshot region
 $ thingshare_screenshot window
+$ thingshare_screenshot display
+$ thingshare_screenshot full
 ```
 
 Upload your current clipboard using:
