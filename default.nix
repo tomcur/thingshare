@@ -2,7 +2,7 @@ with import <nixpkgs> {};
 
 stdenv.mkDerivation rec {
   name = "thingshare-${version}";
-  version = "0.1.0";
+  version = "0.1.1";
 
   src = ./.;
   nativeBuildInputs = [ makeWrapper ];

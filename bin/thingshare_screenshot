@@ -18,7 +18,7 @@ case $1 in
 
         # Hacky way to exit if no screenshot was taken. Currently flameshot does
         # not have good exit codes.
-        size=$(echo ${img} | wc -c)
+        size=$(echo ${img} | xxd -p -r | wc -c)
         if [ ${size} -lt 35 ]; then
             exit 1
         fi
