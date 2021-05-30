@@ -13,7 +13,7 @@ be uploaded automatically and a share URL placed in your clipboard.
 - Supported file share services:
     - Seafile
 
-# Installing
+# Building / Installing
 ## With Nix
 Run:
 
@@ -24,6 +24,17 @@ $ nix-env --file default.nix -i
 ```
 This installs the required dependencies and places Thingshare's executables in
 your path.
+
+## With Nix flakes
+Run:
+
+```bash
+$ git clone https://github.com/beskhue/thingshare.git
+$ cd thingshare
+$ nix build .#
+```
+
+This places Thingshare's executables in `./result/bin`.
 
 ## Without Nix
 
