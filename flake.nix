@@ -6,7 +6,7 @@
   };
 
   outputs = { flake-utils, nixpkgs, ... }:
-    flake-utils.lib.eachDefaultSystem (system: rec {
+    flake-utils.lib.eachSystem [ "x86_64-linux" ] (system: rec {
       packages = {
         thingshare = nixpkgs.legacyPackages.${system}.callPackage ./thingshare.nix { };
       };
